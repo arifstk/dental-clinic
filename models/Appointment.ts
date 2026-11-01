@@ -14,7 +14,7 @@ const AppointmentSchema = new Schema(
     serviceId: { type: Schema.Types.ObjectId, ref: "Service", default: null },
     patientName: { type: String, required: true, trim: true },
     patientPhone: { type: String, required: true, trim: true },
-    patientEmail: { type: String, required: true, lowercase: true, trim: true },
+    patientEmail: { type: String, default: "", lowercase: true, trim: true },
     notes: { type: String, default: "" },
     startTime: { type: Date, required: true }, // stored in UTC
     endTime: { type: Date, required: true },

@@ -1,11 +1,12 @@
-// api/appointments/route.ts
+// app/api/appointments/route.ts
 
-import { NextResponse } from "next/server";
+import { NextResponse, after } from "next/server";
 import { connectDB } from "@/lib/db";
 import Appointment from "@/models/Appointment";
-import Dentist from "@/models/Dentists";
+import Dentist from "@/models/Dentist";
 import { createAppointmentSchema } from "@/lib/validators";
 import { dateKeyFromUtc, getSlotsForDay } from "@/lib/slots";
+import { sendAppointmentMail } from "@/lib/mailer";
 
 const MAX_DAYS_AHEAD = 60;
 
@@ -32,7 +33,7 @@ export async function POST(req: Request) {
   const dentist = await Dentist.findOne({
     _id: data.dentistId,
     active: true,
-  }).lean();
+  }).lean<{ name: string }>();
   if (!dentist)
     return NextResponse.json({ error: "Dentist not found" }, { status: 404 });
 
@@ -50,6 +51,8 @@ export async function POST(req: Request) {
 
   // Layer 2: the unique index rejects simultaneous inserts
   try {
+    const leadMs = start.getTime() - Date.now();
+
     const appt = await Appointment.create({
       dentistId: data.dentistId,
       serviceId: data.serviceId ?? null,
@@ -60,6 +63,22 @@ export async function POST(req: Request) {
       startTime: new Date(slot.start),
       endTime: new Date(slot.end),
       source: "online",
+      reminder24Sent: leadMs <= 24 * 3600000,
+      reminder2Sent: leadMs <= 2 * 3600000,
+    });
+
+    after(async () => {
+      try {
+        await sendAppointmentMail("confirmed", {
+          to: appt.patientEmail,
+          patientName: appt.patientName,
+          dentistName: dentist.name,
+          startTime: appt.startTime,
+          manageToken: appt.manageToken,
+        });
+      } catch (err) {
+        console.error("Confirmation mail failed", err);
+      }
     });
 
     return NextResponse.json(
