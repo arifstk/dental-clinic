@@ -40,3 +40,10 @@ export async function requireRole(
   if (!session || !roles.includes(session.role)) return null;
   return session;
 }
+
+import { GATE_COOKIE, hasGate } from "./gate";
+
+export async function gateOpen() {
+  const store = await cookies();
+  return hasGate(store.get(GATE_COOKIE)?.value);
+}

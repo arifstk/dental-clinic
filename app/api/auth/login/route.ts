@@ -5,9 +5,13 @@ import bcrypt from "bcryptjs";
 import { connectDB } from "@/lib/db";
 import User from "@/models/User";
 import { loginSchema } from "@/lib/validators";
-import { COOKIE_NAME, COOKIE_MAX_AGE, signToken } from "@/lib/auth";
+import { COOKIE_NAME, COOKIE_MAX_AGE, signToken, gateOpen } from "@/lib/auth";
 
 export async function POST(req: Request) {
+  if (!(await gateOpen())) {
+    return NextResponse.json({ error: "Not found" }, { status: 404 });
+  }
+
   const body = await req.json().catch(() => null);
   const parsed = loginSchema.safeParse(body);
   if (!parsed.success) {
