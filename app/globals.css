@@ -1,26 +1,163 @@
 @import "tailwindcss";
-/* 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+
+@theme {
+  --color-primary-50: #effafb;
+  --color-primary-100: #d6f3f5;
+  --color-primary-200: #b0e6ea;
+  --color-primary-300: #7bd2da;
+  --color-primary-400: #3fb7c3;
+  --color-primary-500: #1f9aa8;
+  --color-primary-600: #187c8c;
+  --color-primary-700: #186371;
+  --color-primary-800: #194f5b;
+  --color-primary-900: #19424c;
+
+  --color-ink-900: #0f2530;
+  --color-ink-700: #2b4452;
+  --color-ink-500: #5b7482;
+  --color-ink-300: #a9bbc5;
+
+  --color-surface: #f6fbfc;
+  --color-surface-alt: #eaf5f7;
+  --color-line: #dbe8ec;
+
+  --color-accent-100: #dcf7ee;
+  --color-accent-500: #36c9a0;
+  --color-accent-700: #1b8f6e;
+
+  --color-success-100: #dcfce7;
+  --color-success-700: #166534;
+  --color-warning-100: #fef3c7;
+  --color-warning-700: #92400e;
+  --color-danger-100: #fee2e2;
+  --color-danger-600: #dc2626;
+  --color-danger-700: #b91c1c;
+
+  --radius-card: 1rem;
+  --shadow-card: 0 1px 2px rgb(15 37 48 / 0.04), 0 8px 24px rgb(15 37 48 / 0.06);
+  --shadow-pop: 0 12px 32px rgb(24 124 140 / 0.18);
+  
+  --font-sans: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+/* বেস স্টাইল এবং কম্পোনেন্টস */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  body {
+    background-color: var(--color-surface);
+    font-family: var(--font-sans);
+    color: var(--color-ink-900);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3, h4 {
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    color: var(--color-ink-900);
+  }
+
+  button:not(:disabled), [role="button"] {
+    cursor: pointer;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
-} */
+/* কাস্টম ইউটিলিটি ক্লাসেস */
+@layer components {
+  .container-page {
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+    max-width: 72rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  @media (min-width: 640px) {
+    .container-page { padding-left: 1.5rem; padding-right: 1.5rem; }
+  }
+  @media (min-width: 1024px) {
+    .container-page { padding-left: 2rem; padding-right: 2rem; }
+  }
+
+  .section {
+    padding-top: 3.5rem;
+    padding-bottom: 3.5rem;
+  }
+  @media (min-width: 640px) {
+    .section { padding-top: 5rem; padding-bottom: 5rem; }
+  }
+
+  .section-alt {
+    background-color: var(--color-surface-alt);
+  }
+
+  .card {
+    border-radius: var(--radius-card);
+    border: 1px solid var(--color-line);
+    background-color: #ffffff;
+    padding: 1.25rem;
+    box-shadow: var(--shadow-card);
+  }
+  @media (min-width: 640px) {
+    .card { padding: 1.5rem; }
+  }
+
+  .card-hover {
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .card-hover:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-pop);
+  }
+
+  .input {
+    width: 100%;
+    border-radius: 0.75rem;
+    border: 1px solid var(--color-line);
+    background-color: #ffffff;
+    padding: 0.625rem 0.875rem;
+    font-size: 0.875rem;
+    color: var(--color-ink-900);
+    outline: none;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+  .input:focus {
+    border-color: var(--color-primary-500);
+    box-shadow: 0 0 0 4px var(--color-primary-100);
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border-radius: 0.75rem;
+    padding: 0.625rem 1.25rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    transition: background-color 0.15s ease;
+  }
+  .btn-primary {
+    background-color: var(--color-primary-600);
+    color: #ffffff;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+  }
+  .btn-primary:hover {
+    background-color: var(--color-primary-700);
+  }
+
+  .skeleton {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    border-radius: 0.5rem;
+    background-color: var(--color-surface-alt);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: .5; }
+}
+
