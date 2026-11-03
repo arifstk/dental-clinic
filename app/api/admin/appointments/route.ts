@@ -14,7 +14,6 @@ import { dateKeyFromUtc, getSlotsForDay } from "@/lib/slots";
 import { sendAppointmentMail } from "@/lib/mailer";
 import { env } from "@/lib/env";
 
-export const dynamic = "force-dynamic";
 
 export async function GET(req: Request) {
   if (!(await guard())) return unauthorized();
@@ -75,7 +74,6 @@ export async function POST(req: Request) {
   }
 
   try {
-    // const leadMs = start.getTime() - Date.now();
     const appt = await Appointment.create({
       dentistId: data.dentistId,
       serviceId: data.serviceId ?? null,

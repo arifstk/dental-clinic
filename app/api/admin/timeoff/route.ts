@@ -11,7 +11,6 @@ import { guard, unauthorized, invalid } from "@/lib/admin";
 import { dateKeyFromUtc } from "@/lib/slots";
 import { env } from "@/lib/env";
 
-export const dynamic = "force-dynamic";
 
 export async function GET() {
   if (!(await guard())) return unauthorized();

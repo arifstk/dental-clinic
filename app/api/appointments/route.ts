@@ -51,8 +51,6 @@ export async function POST(req: Request) {
 
   // Layer 2: the unique index rejects simultaneous inserts
   try {
-    // const leadMs = start.getTime() - Date.now();
-
     const appt = await Appointment.create({
       dentistId: data.dentistId,
       serviceId: data.serviceId ?? null,

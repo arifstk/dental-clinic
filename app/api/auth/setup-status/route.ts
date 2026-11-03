@@ -5,8 +5,6 @@ import { connectDB } from "@/lib/db";
 import User from "@/models/User";
 import { gateOpen } from "@/lib/auth";
 
-export const dynamic = "force-dynamic";
-
 export async function GET(req: Request) {
   if (!(await gateOpen())) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });

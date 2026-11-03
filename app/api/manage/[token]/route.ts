@@ -119,11 +119,8 @@ export async function POST(req: Request, { params }: Ctx) {
     );
   }
 
-  const leadMs = start.getTime() - Date.now();
   appt.startTime = new Date(slot.start);
   appt.endTime = new Date(slot.end);
-  appt.reminder24Sent = leadMs <= 24 * 3600000;
-  appt.reminder2Sent = leadMs <= 2 * 3600000;
 
   try {
     await appt.save();

@@ -5,8 +5,6 @@ import { connectDB } from "@/lib/db";
 import { slotsQuerySchema } from "@/lib/validators";
 import { getSlotsForDay } from "@/lib/slots";
 
-export const dynamic = "force-dynamic";
-
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const parsed = slotsQuerySchema.safeParse({
