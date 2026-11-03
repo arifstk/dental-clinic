@@ -75,7 +75,7 @@ export async function POST(req: Request) {
   }
 
   try {
-    const leadMs = start.getTime() - Date.now();
+    // const leadMs = start.getTime() - Date.now();
     const appt = await Appointment.create({
       dentistId: data.dentistId,
       serviceId: data.serviceId ?? null,
@@ -86,8 +86,6 @@ export async function POST(req: Request) {
       startTime: new Date(slot.start),
       endTime: new Date(slot.end),
       source: data.source,
-      reminder24Sent: leadMs <= 24 * 3600000,
-      reminder2Sent: leadMs <= 2 * 3600000,
     });
 
     if (appt.patientEmail) {

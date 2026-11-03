@@ -4,12 +4,7 @@ import nodemailer from "nodemailer";
 import { formatInTimeZone } from "date-fns-tz";
 import { env } from "./env";
 
-export type MailKind =
-  | "confirmed"
-  | "rescheduled"
-  | "cancelled"
-  | "reminder24"
-  | "reminder2";
+export type MailKind = "confirmed" | "rescheduled" | "cancelled";
 
 export type MailData = {
   to: string;
@@ -45,17 +40,6 @@ const COPY: Record<
     heading: "Your appointment has been cancelled",
     intro:
       "This appointment has been cancelled. You can book a new time anytime.",
-  },
-  reminder24: {
-    subject: "Reminder: appointment within 24 hours",
-    heading: "Appointment reminder",
-    intro:
-      "This is a reminder that your appointment is coming up within the next 24 hours.",
-  },
-  reminder2: {
-    subject: "Reminder: appointment in 2 hours",
-    heading: "Your appointment is almost here",
-    intro: "Your appointment starts in about 2 hours.",
   },
 };
 

@@ -27,7 +27,7 @@ export const metadata: Metadata = {
 const steps = [
   { icon: UserRound, title: "Choose your dentist", text: "Browse our dentists and pick the one you prefer." },
   { icon: CalendarCheck, title: "Pick a date and time", text: "See live availability and select a slot that suits you." },
-  { icon: Mail, title: "Get instant confirmation", text: "Receive an email right away, plus a reminder before your visit." },
+  { icon: Mail, title: "Get instant confirmation", text: "Receive an email right away with a link to cancel or reschedule." },
 ];
 
 const services = [

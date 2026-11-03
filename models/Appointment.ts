@@ -33,8 +33,6 @@ const AppointmentSchema = new Schema(
       default: () => crypto.randomBytes(24).toString("hex"),
       index: true,
     },
-    reminder24Sent: { type: Boolean, default: false },
-    reminder2Sent: { type: Boolean, default: false },
   },
   { timestamps: true },
 );

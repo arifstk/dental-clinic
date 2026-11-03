@@ -51,7 +51,7 @@ export async function POST(req: Request) {
 
   // Layer 2: the unique index rejects simultaneous inserts
   try {
-    const leadMs = start.getTime() - Date.now();
+    // const leadMs = start.getTime() - Date.now();
 
     const appt = await Appointment.create({
       dentistId: data.dentistId,
@@ -63,8 +63,6 @@ export async function POST(req: Request) {
       startTime: new Date(slot.start),
       endTime: new Date(slot.end),
       source: "online",
-      reminder24Sent: leadMs <= 24 * 3600000,
-      reminder2Sent: leadMs <= 2 * 3600000,
     });
 
     after(async () => {

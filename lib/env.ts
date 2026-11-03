@@ -14,7 +14,6 @@ const schema = z.object({
   SMTP_PASS: z.string().min(1),
   MAIL_FROM: z.string().min(1),
   NEXT_PUBLIC_SITE_URL: z.string().url(),
-  CRON_SECRET: z.string().min(8),
   CLOUDINARY_CLOUD_NAME: z.string().min(1),
   CLOUDINARY_API_KEY: z.string().min(1),
   CLOUDINARY_API_SECRET: z.string().min(1),

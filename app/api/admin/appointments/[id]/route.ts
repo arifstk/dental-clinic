@@ -51,11 +51,8 @@ export async function PATCH(req: Request, { params }: IdCtx) {
         { status: 409 },
       );
     }
-    const leadMs = start.getTime() - Date.now();
     appt.startTime = new Date(slot.start);
     appt.endTime = new Date(slot.end);
-    appt.reminder24Sent = leadMs <= 24 * 3600000;
-    appt.reminder2Sent = leadMs <= 2 * 3600000;
     mailKind = "rescheduled";
   }
 
