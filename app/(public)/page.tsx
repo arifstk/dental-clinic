@@ -18,6 +18,7 @@ import {
   UserRound,
 } from "lucide-react";
 import { site } from "@/lib/site";
+import Hero from "@/components/Hero";
 
 export const metadata: Metadata = {
   title: { absolute: `${site.name} | Book a Dentist Appointment Online` },
@@ -50,68 +51,7 @@ export default function HomePage() {
   return (
     <>
       {/* Hero */}
-      <section className="section bg-hero">
-        <div className="container-page grid items-center gap-10 lg:grid-cols-2">
-          <div>
-            <p className="eyebrow">Online booking</p>
-            <h1 className="heading-hero mt-3">Gentle dental care, booked in a minute</h1>
-            <p className="lead mt-5 max-w-xl">
-              Pick your dentist, choose a time that suits you, and get an instant confirmation. No phone call needed.
-            </p>
-
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <Link href="/booking" className="btn btn-primary btn-lg">
-                Book appointment
-              </Link>
-              <a href={site.phoneHref} className="btn btn-outline btn-lg">
-                <Phone size={18} aria-hidden />
-                Call us
-              </a>
-            </div>
-
-            <ul className="mt-8 grid gap-2.5 text-sm text-ink-700 sm:grid-cols-2">
-              {["Instant confirmation", "Email reminders", "Choose your dentist", "Cancel or reschedule online"].map((t) => (
-                <li key={t} className="flex items-center gap-2">
-                  <span className="flex h-5 w-5 items-center justify-center rounded-full bg-accent-100 text-accent-700">
-                    <Check size={12} strokeWidth={3} aria-hidden />
-                  </span>
-                  {t}
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <aside className="card">
-            <h2 className="heading-3">Visit us</h2>
-            <ul className="mt-5 space-y-4 text-sm text-ink-700">
-              <li className="flex gap-3">
-                <MapPin size={18} className="mt-0.5 shrink-0 text-primary-600" aria-hidden />
-                <a href={site.mapsUrl} target="_blank" rel="noopener noreferrer" className="hover:text-primary-700">
-                  {site.address}
-                </a>
-              </li>
-              <li className="flex gap-3">
-                <Phone size={18} className="mt-0.5 shrink-0 text-primary-600" aria-hidden />
-                <a href={site.phoneHref} className="hover:text-primary-700">
-                  {site.phone}
-                </a>
-              </li>
-              {site.hours.map((h) => (
-                <li key={h.days} className="flex gap-3">
-                  <Clock size={18} className="mt-0.5 shrink-0 text-primary-600" aria-hidden />
-                  <span>
-                    <span className="block font-medium text-ink-900">{h.days}</span>
-                    {h.time}
-                  </span>
-                </li>
-              ))}
-            </ul>
-            <Link href="/booking" className="btn btn-primary btn-block mt-6">
-              Book online
-            </Link>
-          </aside>
-        </div>
-      </section>
+      <Hero />
 
       {/* How it works */}
       <section className="section">
