@@ -41,7 +41,6 @@
   --font-sans: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
 }
 
-/* বেস স্টাইল এবং কম্পোনেন্টস */
 @layer base {
   html {
     scroll-behavior: smooth;
@@ -68,9 +67,36 @@
   [role="button"] {
     cursor: pointer;
   }
+
+  /* Tables (admin lists) */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  th {
+    padding: 0.75rem 1rem;
+    text-align: left;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--color-ink-500);
+    background-color: var(--color-surface-alt);
+    border-bottom: 1px solid var(--color-line);
+  }
+  td {
+    padding: 0.875rem 1rem;
+    font-size: 0.875rem;
+    vertical-align: middle;
+    color: var(--color-ink-700);
+    border-bottom: 1px solid var(--color-line);
+  }
+  tbody tr:last-child td {
+    border-bottom: 0;
+  }
 }
 
-/* কাস্টম ইউটিলিটি ক্লাসেস */
+/* custom utilities classes */
 @layer components {
   .container-page {
     margin-left: auto;
@@ -168,6 +194,98 @@
   .btn-primary:hover {
     background-color: var(--color-primary-700);
   }
+  .btn-light {
+    @apply bg-white text-primary-700 shadow-sm hover:bg-primary-50;
+  }
+  .btn-lg {
+    @apply px-6 py-3 text-base;
+  }
+
+  /* Page hero and typography */
+  .bg-hero {
+    background-image: linear-gradient(
+      to bottom,
+      var(--color-primary-50),
+      var(--color-surface)
+    );
+  }
+  .eyebrow {
+    @apply text-sm font-semibold uppercase tracking-wider text-primary-600;
+  }
+  .heading-1 {
+    @apply text-3xl font-semibold leading-tight text-ink-900 sm:text-4xl lg:text-5xl;
+  }
+  .heading-3 {
+    @apply text-lg font-semibold text-ink-900;
+  }
+  .lead {
+    @apply text-lg leading-relaxed text-ink-700;
+  }
+  .muted {
+    @apply text-sm leading-relaxed text-ink-500;
+  }
+
+  /* Badges */
+  .badge {
+    @apply inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium;
+  }
+  .badge-neutral {
+    @apply bg-surface-alt text-ink-700;
+  }
+  .badge-success {
+    @apply bg-success-100 text-success-700;
+  }
+  .badge-warning {
+    @apply bg-warning-100 text-warning-700;
+  }
+  .badge-danger {
+    @apply bg-danger-100 text-danger-700;
+  }
+
+  /* Admin page title, table wrapper and extra buttons */
+  .heading-2 {
+    @apply text-2xl font-semibold text-ink-900 sm:text-3xl;
+  }
+  .table-wrap {
+    @apply overflow-x-auto rounded-card border border-line bg-white shadow-card;
+  }
+  .table {
+    @apply w-full text-left text-sm;
+  }
+  .btn-sm {
+    @apply px-3 py-1.5 text-xs;
+  }
+  .btn-outline {
+    @apply border border-line bg-white text-ink-700 hover:bg-surface-alt;
+  }
+  .btn-ghost {
+    @apply text-primary-700 hover:bg-primary-50;
+  }
+  .btn-danger {
+    @apply bg-danger-600 text-white hover:bg-danger-700;
+  }
+
+  /* Alerts */
+  .alert {
+    @apply rounded-xl border px-4 py-3 text-sm;
+  }
+  .alert-danger {
+    @apply border-danger-600/20 bg-danger-100 text-danger-700;
+  }
+  .alert-info {
+    @apply border-primary-200 bg-primary-50 text-primary-800;
+  }
+  .alert-success {
+    @apply border-success-700/20 bg-success-100 text-success-700;
+  }
+  .alert-warning {
+    @apply border-warning-700/20 bg-warning-100 text-warning-700;
+  }
+
+  /* Form label */
+  .label {
+    @apply mb-1.5 block text-sm font-medium text-ink-700;
+  }
 
   .skeleton {
     animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
@@ -231,6 +349,25 @@
   .sidebar-link-active {
     background-color: var(--color-primary-50);
     color: var(--color-primary-700);
+  }
+  /* Booking choices and calendar */
+  .choice {
+    @apply flex w-full items-center gap-4 rounded-card border border-line bg-white p-4 text-left transition hover:border-primary-300 hover:bg-primary-50;
+  }
+  .choice-selected {
+    @apply border-primary-600 bg-primary-50 ring-2 ring-primary-200 hover:border-primary-600;
+  }
+  .cal-day {
+    @apply flex aspect-square items-center justify-center rounded-xl text-sm font-medium text-ink-900 transition;
+  }
+  .cal-day-available {
+    @apply bg-primary-50 text-primary-800 hover:bg-primary-100;
+  }
+  .cal-day-selected {
+    @apply bg-primary-600 text-white hover:bg-primary-600;
+  }
+  .cal-day-off {
+    @apply cursor-not-allowed text-ink-300;
   }
 }
 

@@ -13,6 +13,7 @@ const schema = z.object({
   SMTP_USER: z.string().min(1),
   SMTP_PASS: z.string().min(1),
   MAIL_FROM: z.string().min(1),
+  CONTACT_TO: z.string().email().optional(),
   NEXT_PUBLIC_SITE_URL: z.string().url(),
   CLOUDINARY_CLOUD_NAME: z.string().min(1),
   CLOUDINARY_API_KEY: z.string().min(1),

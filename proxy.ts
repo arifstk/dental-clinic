@@ -32,14 +32,18 @@ async function readRole(req: NextRequest): Promise<string | null> {
   }
 }
 
-function notFound(req: NextRequest) {
-  return NextResponse.rewrite(new URL("/404", req.url), { status: 404 });
+// Rewrites to a path that does not exist, so the app's own not-found page is shown
+function hidden(req: NextRequest) {
+  return NextResponse.rewrite(new URL("/page-not-found", req.url), {
+    status: 404,
+  });
 }
 
 export async function proxy(req: NextRequest) {
   const { pathname, searchParams } = req.nextUrl;
   const isApi = pathname.startsWith("/api/");
   const role = await readRole(req);
+  const gateOk = await hasGate(req.cookies.get(GATE_COOKIE)?.value);
 
   if (pathname === "/admin/login") {
     if (role)
@@ -57,15 +61,15 @@ export async function proxy(req: NextRequest) {
       return res;
     }
 
-    if (await hasGate(req.cookies.get(GATE_COOKIE)?.value))
-      return NextResponse.next();
-    return notFound(req);
+    return gateOk ? NextResponse.next() : hidden(req);
   }
 
   if (!role) {
     if (isApi)
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    return notFound(req);
+    return gateOk
+      ? NextResponse.redirect(new URL("/admin/login", req.url))
+      : hidden(req);
   }
 
   const adminOnly = ADMIN_ONLY.some((p) => pathname.startsWith(p));

@@ -19,3 +19,5 @@ export const navLinks = [
   { href: "/about", label: "About" },
   { href: "/contact", label: "Contact" },
 ];
+
+export const mapsEmbedUrl = `https://www.google.com/maps?q=${encodeURIComponent(site.address)}&output=embed`;

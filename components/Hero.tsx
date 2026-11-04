@@ -16,7 +16,7 @@ export default function Hero() {
 
             <div className="space-y-4">
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-ink-900 leading-[1.15]">
-                Gentle dental care, <br />
+                Smile dental care, <br />
                 <span className="text-primary-600">booked in a minute</span>
               </h1>
               <p className="text-base sm:text-lg text-ink-500 max-w-xl leading-relaxed">
@@ -26,7 +26,7 @@ export default function Hero() {
 
             {/* CTA Buttons */}
             <div className="flex flex-wrap items-center gap-4 pt-2">
-              <Link href="/book" className="btn btn-primary text-base shadow-lg hover:shadow-xl transition-all">
+              <Link href="/booking" className="btn btn-primary text-base shadow-lg hover:shadow-xl transition-all">
                 <Calendar className="w-5 h-5" />
                 Book appointment
               </Link>
@@ -91,7 +91,7 @@ export default function Hero() {
               </div>
 
               <div className="pt-2">
-                <Link href="/book" className="btn btn-primary w-full justify-center">
+                <Link href="/booking" className="btn btn-primary w-full justify-center">
                   Book online
                 </Link>
               </div>

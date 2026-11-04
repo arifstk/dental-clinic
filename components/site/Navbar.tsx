@@ -20,7 +20,7 @@ export default function Navbar() {
       <div className="container-page flex h-16 items-center justify-between">
         <Logo />
 
-        <nav className="hidden items-center gap-8 md:flex" aria-label="Main">
+        <nav className="hidden items-center gap-8 md:flex text-sm" aria-label="Main">
           {navLinks.map((l) => (
             <Link key={l.href} href={l.href} className={`nav-link ${isActive(l.href) ? "nav-link-active" : ""}`}>
               {l.label}
@@ -29,7 +29,7 @@ export default function Navbar() {
         </nav>
 
         <div className="flex items-center gap-3">
-          <a href={site.phoneHref} className="nav-link hidden items-center gap-2 lg:flex">
+          <a href={site.phoneHref} className="nav-link hidden items-center gap-2 lg:flex text-sm">
             <Phone size={16} aria-hidden />
             {site.phone}
           </a>

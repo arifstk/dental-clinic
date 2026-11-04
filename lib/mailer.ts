@@ -91,3 +91,28 @@ export async function sendAppointmentMail(kind: MailKind, d: MailData) {
     text,
   });
 }
+
+export async function sendContactMail(d: {
+  name: string;
+  email: string;
+  phone?: string;
+  message: string;
+}) {
+  const html = `
+  <div style="font-family:Arial,sans-serif;max-width:520px;padding:16px;color:#0f172a">
+    <h3 style="margin:0 0 12px">New message from the website</h3>
+    <p><strong>Name:</strong> ${esc(d.name)}</p>
+    <p><strong>Email:</strong> ${esc(d.email)}</p>
+    ${d.phone ? `<p><strong>Phone:</strong> ${esc(d.phone)}</p>` : ""}
+    <p style="white-space:pre-wrap">${esc(d.message)}</p>
+  </div>`;
+
+  await transporter.sendMail({
+    from: env.MAIL_FROM,
+    to: env.CONTACT_TO ?? env.SMTP_USER,
+    replyTo: d.email,
+    subject: `Website message from ${d.name}`,
+    text: `Name: ${d.name}\nEmail: ${d.email}\nPhone: ${d.phone ?? "-"}\n\n${d.message}`,
+    html,
+  });
+}

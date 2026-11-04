@@ -130,3 +130,25 @@ export const adminPatchAppointmentSchema = z
     notes: z.string().max(500).optional(),
   })
   .refine((v) => Object.keys(v).length > 0, { message: "Nothing to update" });
+
+export const monthQuerySchema = z.object({
+  dentistId: objectId,
+  month: z.string().regex(/^\d{4}-(0[1-9]|1[0-2])$/),
+});
+
+export const staffPatchSchema = z
+  .object({
+    name: z.string().min(2).max(80).trim().optional(),
+    role: z.enum(["admin", "receptionist"]).optional(),
+    active: z.boolean().optional(),
+    password: z.string().min(8).max(100).optional(),
+  })
+  .refine((v) => Object.keys(v).length > 0, { message: "Nothing to update" });
+
+export const contactSchema = z.object({
+  name: z.string().min(2).max(80).trim(),
+  email: z.string().email().toLowerCase().trim(),
+  phone: z.string().max(20).trim().optional(),
+  message: z.string().min(10).max(1500).trim(),
+  website: z.string().max(200).optional(), // honeypot field, humans leave it empty
+});
