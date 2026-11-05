@@ -150,7 +150,7 @@ export const contactSchema = z.object({
   email: z.string().email().toLowerCase().trim(),
   phone: z.string().max(20).trim().optional(),
   message: z.string().min(10).max(1500).trim(),
-  website: z.string().max(200).optional(), // honeypot field, humans leave it empty
+  website: z.string().max(200).optional(),
 });
 
 export const settingsSchema = z.object({
@@ -176,4 +176,14 @@ export const settingsSchema = z.object({
     )
     .min(1, "Add at least one row")
     .max(10),
+});
+
+// Messages validation 
+export const messagePatchSchema = z.object({
+  marked: z.boolean(),
+});
+
+export const messageReplySchema = z.object({
+  subject: z.string().trim().max(150).default(""),
+  body: z.string().trim().min(1, "Reply cannot be empty").max(5000),
 });

@@ -3,15 +3,20 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Clock, Mail, MapPin, Phone } from "lucide-react";
-import { mapsEmbedUrl, site } from "@/lib/site";
+import { getSiteSettings, toMapsEmbedUrl } from "@/lib/settings";
 import ContactForm from "@/components/site/ContactForm";
 
-export const metadata: Metadata = {
-  title: "Contact",
-  description: `Find ${site.name}, see our opening hours, or send us a message.`,
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const s = await getSiteSettings();
+  return {
+    title: "Contact",
+    description: `Find ${s.name}, see our opening hours, or send us a message.`,
+  };
+}
 
-export default function ContactPage() {
+export default async function ContactPage() {
+  const s = await getSiteSettings();
+
   return (
     <>
       <section className="section bg-hero">
@@ -36,8 +41,8 @@ export default function ContactPage() {
                   <MapPin size={20} className="mt-0.5 shrink-0 text-primary-600" aria-hidden />
                   <span>
                     <span className="block font-semibold text-ink-900">Address</span>
-                    <a href={site.mapsUrl} target="_blank" rel="noopener noreferrer" className="hover:text-primary-700">
-                      {site.address}
+                    <a href={s.mapsHref} target="_blank" rel="noopener noreferrer" className="hover:text-primary-700">
+                      {s.address}
                     </a>
                   </span>
                 </li>
@@ -45,8 +50,8 @@ export default function ContactPage() {
                   <Phone size={20} className="mt-0.5 shrink-0 text-primary-600" aria-hidden />
                   <span>
                     <span className="block font-semibold text-ink-900">Phone</span>
-                    <a href={site.phoneHref} className="hover:text-primary-700">
-                      {site.phone}
+                    <a href={s.phoneHref} className="hover:text-primary-700">
+                      {s.phone}
                     </a>
                   </span>
                 </li>
@@ -54,17 +59,17 @@ export default function ContactPage() {
                   <Mail size={20} className="mt-0.5 shrink-0 text-primary-600" aria-hidden />
                   <span>
                     <span className="block font-semibold text-ink-900">Email</span>
-                    <a href={`mailto:${site.email}`} className="hover:text-primary-700">
-                      {site.email}
+                    <a href={`mailto:${s.email}`} className="hover:text-primary-700">
+                      {s.email}
                     </a>
                   </span>
                 </li>
-                {site.hours.map((h) => (
+                {s.hours.map((h) => (
                   <li key={h.days} className="flex gap-3">
                     <Clock size={20} className="mt-0.5 shrink-0 text-primary-600" aria-hidden />
                     <span>
                       <span className="block font-semibold text-ink-900">{h.days}</span>
-                      {h.time}
+                      {h.closed ? "Closed" : h.time}
                     </span>
                   </li>
                 ))}
@@ -72,8 +77,8 @@ export default function ContactPage() {
             </div>
 
             <iframe
-              src={mapsEmbedUrl}
-              title={`Map showing ${site.name}`}
+              src={toMapsEmbedUrl(s.address)}
+              title={`Map showing ${s.name}`}
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
               className="h-72 w-full rounded-card border border-line sm:h-80"
@@ -86,3 +91,4 @@ export default function ContactPage() {
     </>
   );
 }
+

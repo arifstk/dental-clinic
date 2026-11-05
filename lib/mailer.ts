@@ -116,3 +116,42 @@ export async function sendContactMail(d: {
     html,
   });
 }
+
+// contact messages 
+type ReplyMailInput = {
+  to: string;
+  toName: string;
+  subject: string;
+  body: string;
+  original: string;
+  clinicName: string;
+  replyTo?: string;
+};
+
+const escapeHtml = (s: string) =>
+  s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+export async function sendReplyMail(input: ReplyMailInput) {
+  const { to, toName, subject, body, original, clinicName, replyTo } = input;
+
+  const text = `Hi ${toName},\n\n${body}\n\n— ${clinicName}\n\n----\nYour original message:\n${original}`;
+
+  const html = `
+    <div style="font-family:Arial,sans-serif;font-size:14px;line-height:1.6;color:#111">
+      <p>Hi ${escapeHtml(toName)},</p>
+      <div style="white-space:pre-wrap">${escapeHtml(body)}</div>
+      <p style="margin-top:24px">— ${escapeHtml(clinicName)}</p>
+      <hr style="border:none;border-top:1px solid #ddd;margin:24px 0" />
+      <p style="color:#666;font-size:12px;margin:0 0 6px">Your original message:</p>
+      <blockquote style="margin:0;padding-left:12px;border-left:3px solid #ddd;color:#555;white-space:pre-wrap">${escapeHtml(original)}</blockquote>
+    </div>`;
+
+  await transporter.sendMail({
+    from: FROM,
+    to,
+    replyTo,
+    subject,
+    text,
+    html,
+  });
+}

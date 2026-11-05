@@ -3,6 +3,8 @@
 import { NextResponse } from "next/server";
 import { contactSchema } from "@/lib/validators";
 import { sendContactMail } from "@/lib/mailer";
+import { connectDB } from "@/lib/db";
+import Message from "@/models/Message";
 
 export async function POST(req: Request) {
   const parsed = contactSchema.safeParse(await req.json().catch(() => null));
@@ -13,9 +15,27 @@ export async function POST(req: Request) {
     );
   }
 
-  // Bots fill the hidden field. Pretend success and send nothing.
+  // Bots fill the hidden field. Pretend success and save/send nothing.
   if (parsed.data.website) return NextResponse.json({ ok: true });
 
+  // Save first, so the message is never lost
+  try {
+    await connectDB();
+    await Message.create({
+      name: parsed.data.name,
+      email: parsed.data.email,
+      phone: parsed.data.phone ?? "",
+      message: parsed.data.message,
+    });
+  } catch (err) {
+    console.error("Contact save failed", err);
+    return NextResponse.json(
+      { error: "Could not send your message. Please call us instead." },
+      { status: 500 },
+    );
+  }
+
+  // Email notification is best-effort; the message is already in the admin inbox
   try {
     await sendContactMail({
       name: parsed.data.name,
@@ -24,11 +44,7 @@ export async function POST(req: Request) {
       message: parsed.data.message,
     });
   } catch (err) {
-    console.error("Contact mail failed", err);
-    return NextResponse.json(
-      { error: "Could not send your message. Please call us instead." },
-      { status: 500 },
-    );
+    console.error("Contact notification mail failed", err);
   }
 
   return NextResponse.json({ ok: true });

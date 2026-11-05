@@ -29,7 +29,8 @@ const items = [
   { href: "/admin/services", label: "Services", icon: ClipboardList },
   { href: "/admin/timeoff", label: "Time off", icon: CalendarOff },
   { href: "/admin/staff", label: "Staff", icon: Users, adminOnly: true },
-  { href: "/admin/settings", label: "Settings", icon: ExternalLink },
+  { href: "/admin/messages", label: "Messages", icon: Smile },
+  { href: "/admin/settings", label: "Settings", icon: ExternalLink, adminOnly: true },
 ];
 
 export default function AdminShell({
