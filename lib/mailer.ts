@@ -136,6 +136,8 @@ export async function sendReplyMail(input: ReplyMailInput) {
 
   const text = `Hi ${toName},\n\n${body}\n\n— ${clinicName}\n\n----\nYour original message:\n${original}`;
 
+  const FROM = process.env.EMAIL_FROM || '"Smile Dental" <noreply@smiledental.com>';
+
   const html = `
     <div style="font-family:Arial,sans-serif;font-size:14px;line-height:1.6;color:#111">
       <p>Hi ${escapeHtml(toName)},</p>
@@ -147,7 +149,7 @@ export async function sendReplyMail(input: ReplyMailInput) {
     </div>`;
 
   await transporter.sendMail({
-    from: FROM,
+    from: process.env.EMAIL_FROM,
     to,
     replyTo,
     subject,
