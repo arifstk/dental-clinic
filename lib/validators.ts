@@ -152,3 +152,28 @@ export const contactSchema = z.object({
   message: z.string().min(10).max(1500).trim(),
   website: z.string().max(200).optional(), // honeypot field, humans leave it empty
 });
+
+export const settingsSchema = z.object({
+  name: z.string().trim().min(1, "Clinic name is required").max(80),
+  phone: z.string().trim().min(5, "Phone is required").max(30),
+  email: z.string().trim().email("Invalid email").max(120),
+  address: z.string().trim().min(1, "Address is required").max(200),
+  mapsUrl: z
+    .union([z.literal(""), z.string().trim().url("Invalid URL")])
+    .default(""),
+  hours: z
+    .array(
+      z
+        .object({
+          days: z.string().trim().min(1, "Days label is required").max(60),
+          time: z.string().trim().max(60).default(""),
+          closed: z.boolean().default(false),
+        })
+        .refine((h) => h.closed || h.time.length > 0, {
+          message: "Time is required unless marked closed",
+          path: ["time"],
+        }),
+    )
+    .min(1, "Add at least one row")
+    .max(10),
+});
