@@ -4,14 +4,16 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Clock, Mail, MapPin, Phone } from "lucide-react";
 import { getSiteSettings, toMapsEmbedUrl } from "@/lib/settings";
+import { buildMetadata } from "@/lib/seo";
 import ContactForm from "@/components/site/ContactForm";
 
 export async function generateMetadata(): Promise<Metadata> {
   const s = await getSiteSettings();
-  return {
+  return buildMetadata(s.name, {
     title: "Contact",
     description: `Find ${s.name}, see our opening hours, or send us a message.`,
-  };
+    path: "/contact",
+  });
 }
 
 export default async function ContactPage() {
@@ -91,4 +93,3 @@ export default async function ContactPage() {
     </>
   );
 }
-

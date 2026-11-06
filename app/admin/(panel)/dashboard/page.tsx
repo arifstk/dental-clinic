@@ -1,5 +1,6 @@
 // app/admin/(panel)/dashboard/page.tsx
 
+import { Suspense } from "react";
 import type { Metadata } from "next";
 import { formatInTimeZone, fromZonedTime } from "date-fns-tz";
 import { connectDB } from "@/lib/db";
@@ -27,11 +28,32 @@ const statusBadge: Record<string, string> = {
   no_show: "badge-warning",
 };
 
-export default async function DashboardPage() {
+export default function DashboardPage() {
+  return (
+    <div className="mx-auto max-w-6xl">
+      <Suspense fallback={<DashboardSkeleton />}>
+        <DashboardContent />
+      </Suspense>
+    </div>
+  );
+}
+
+function DashboardSkeleton() {
+  return (
+    <>
+      <div className="h-4 w-40 animate-pulse rounded bg-surface" />
+      <div className="mt-3 h-9 w-72 animate-pulse rounded bg-surface" />
+      <div className="mt-6 h-64 animate-pulse rounded-card bg-surface" />
+    </>
+  );
+}
+
+async function DashboardContent() {
   const session = await getSession();
   await connectDB();
 
-  const today = dateKeyFromUtc(new Date());
+  const now = new Date();
+  const today = dateKeyFromUtc(now);
   const dayStart = fromZonedTime(`${today}T00:00:00`, env.CLINIC_TZ);
   const dayEnd = fromZonedTime(`${today}T23:59:59.999`, env.CLINIC_TZ);
   const weekEnd = new Date(dayEnd.getTime() + 7 * 86400000);
@@ -54,8 +76,8 @@ export default async function DashboardPage() {
   ];
 
   return (
-    <div className="mx-auto max-w-6xl">
-      <p className="eyebrow">{formatInTimeZone(new Date(), env.CLINIC_TZ, "EEEE, d MMMM yyyy")}</p>
+    <>
+      <p className="eyebrow">{formatInTimeZone(now, env.CLINIC_TZ, "EEEE, d MMMM yyyy")}</p>
       <h1 className="heading-1 mt-1">Welcome, {session?.name}</h1>
 
       <div className="mt-6 grid gap-4 sm:grid-cols-3">
@@ -103,6 +125,6 @@ export default async function DashboardPage() {
           </table>
         </div>
       )}
-    </div>
+    </>
   );
 }

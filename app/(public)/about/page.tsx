@@ -4,16 +4,18 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { HeartPulse, ShieldCheck, Smile, UserRound } from "lucide-react";
-import { connectDB } from "@/lib/db";
-import Dentist from "@/models/Dentist";
-import { site } from "@/lib/site";
+import { getActiveDentists } from "@/lib/data";
+import { getSiteSettings } from "@/lib/settings";
+import { buildMetadata } from "@/lib/seo";
 
-export const dynamic = "force-dynamic";
-
-export const metadata: Metadata = {
-  title: "About us",
-  description: "Meet our dentists and learn how we make dental care comfortable, clear, and easy to book.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const s = await getSiteSettings();
+  return buildMetadata(s.name, {
+    title: "About us",
+    description: "Meet our dentists and learn how we make dental care comfortable, clear, and easy to book.",
+    path: "/about",
+  });
+}
 
 const values = [
   {
@@ -33,19 +35,8 @@ const values = [
   },
 ];
 
-type Row = { _id: unknown; name: string; specialty?: string; bio?: string; photo?: string };
-
-async function getDentists(): Promise<Row[]> {
-  try {
-    await connectDB();
-    return await Dentist.find({ active: true }).sort({ name: 1 }).lean<Row[]>();
-  } catch {
-    return [];
-  }
-}
-
 export default async function AboutPage() {
-  const dentists = await getDentists();
+  const [dentists, s] = await Promise.all([getActiveDentists(), getSiteSettings()]);
 
   return (
     <>
@@ -54,7 +45,7 @@ export default async function AboutPage() {
           <p className="eyebrow">About us</p>
           <h1 className="heading-1 mt-2">Dental care that feels easy</h1>
           <p className="lead mt-4">
-            At {site.name}, we believe a dental visit should be comfortable, clear, and simple to arrange. That is why you
+            At {s.name}, we believe a dental visit should be comfortable, clear, and simple to arrange. That is why you
             can book online in under a minute, and change your plans whenever you need.
           </p>
         </div>
@@ -84,11 +75,11 @@ export default async function AboutPage() {
 
             <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {dentists.map((d) => (
-                <article key={String(d._id)} className="card overflow-hidden p-0 sm:p-0">
+                <article key={d.id} className="card overflow-hidden p-0 sm:p-0">
                   {d.photo ? (
                     <Image
                       src={d.photo}
-                      alt={d.name}
+                      alt={`${d.name}, ${d.specialty}`}
                       width={600}
                       height={600}
                       sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"

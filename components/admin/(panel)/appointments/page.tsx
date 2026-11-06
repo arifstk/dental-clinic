@@ -8,7 +8,7 @@ import { dateKeyFromUtc } from "@/lib/slots";
 import { env } from "@/lib/env";
 import AppointmentsManager from "@/components/admin/AppointmentsManager";
 
-export const dynamic = "force-dynamic";
+// export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Appointments" };
 
 export default async function AppointmentsPage() {

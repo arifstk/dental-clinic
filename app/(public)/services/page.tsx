@@ -3,15 +3,18 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Baby, Clock, HeartPulse, ShieldCheck, Smile, Sparkles, Stethoscope } from "lucide-react";
-import { connectDB } from "@/lib/db";
-import Service from "@/models/Service";
+import { getActiveServices } from "@/lib/data";
+import { getSiteSettings } from "@/lib/settings";
+import { buildMetadata } from "@/lib/seo";
 
-export const dynamic = "force-dynamic";
-
-export const metadata: Metadata = {
-  title: "Services",
-  description: "Check-ups, cleaning, fillings, braces, children's dentistry and emergency care. Book online in a minute.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const s = await getSiteSettings();
+  return buildMetadata(s.name, {
+    title: "Services",
+    description: "Check-ups, cleaning, fillings, braces, children's dentistry and emergency care. Book online in a minute.",
+    path: "/services",
+  });
+}
 
 type Item = { id: string; name: string; description: string; minutes?: number; price?: number };
 
@@ -27,23 +30,8 @@ const FALLBACK: Item[] = [
 ];
 
 async function getServices(): Promise<Item[]> {
-  try {
-    await connectDB();
-    const rows = await Service.find({ active: true })
-      .sort({ name: 1 })
-      .lean<{ _id: unknown; name: string; description?: string; durationMinutes: number; price: number }[]>();
-
-    if (rows.length === 0) return FALLBACK;
-    return rows.map((r) => ({
-      id: String(r._id),
-      name: r.name,
-      description: r.description ?? "",
-      minutes: r.durationMinutes,
-      price: r.price,
-    }));
-  } catch {
-    return FALLBACK;
-  }
+  const rows = await getActiveServices(); // cached
+  return rows.length ? rows : FALLBACK;
 }
 
 export default async function ServicesPage() {

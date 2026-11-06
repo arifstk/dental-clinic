@@ -5,6 +5,7 @@ import { connectDB } from "@/lib/db";
 import Service from "@/models/Service";
 import { serviceSchema } from "@/lib/validators";
 import { guard, unauthorized, invalid } from "@/lib/admin";
+import { invalidate, TAGS } from "@/lib/cache";
 
 export async function GET() {
   if (!(await guard())) return unauthorized();
@@ -20,6 +21,7 @@ export async function POST(req: Request) {
 
   await connectDB();
   const service = await Service.create(parsed.data);
+  invalidate(TAGS.services);
   return NextResponse.json(
     { ok: true, id: String(service._id) },
     { status: 201 },

@@ -1,5 +1,7 @@
 // app/admin/(panel)/appointments/page.tsx
 
+import { Suspense } from "react";
+import { connection } from "next/server";
 import type { Metadata } from "next";
 import { connectDB } from "@/lib/db";
 import Dentist from "@/models/Dentist";
@@ -8,10 +10,19 @@ import { dateKeyFromUtc } from "@/lib/slots";
 import { env } from "@/lib/env";
 import AppointmentsManager from "@/components/admin/AppointmentsManager";
 
-export const dynamic = "force-dynamic";
+// export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Appointments" };
 
-export default async function AppointmentsPage() {
+export default function AppointmentsPage() {
+  return (
+    <Suspense fallback={<div className="h-96 animate-pulse rounded-card bg-surface" />}>
+      <AppointmentsContent />
+    </Suspense>
+  );
+}
+
+async function AppointmentsContent() {
+  await connection();
   await connectDB();
 
   const [dentists, services] = await Promise.all([

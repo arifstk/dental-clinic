@@ -5,7 +5,7 @@ import { getSiteSettings } from "@/lib/settings";
 import SettingsForm from "@/components/admin/SettingsForm";
 
 export const metadata: Metadata = { title: "Settings" };
-export const dynamic = "force-dynamic";
+// export const dynamic = "force-dynamic";
 
 export default async function SettingsPage() {
   const settings = await getSiteSettings();

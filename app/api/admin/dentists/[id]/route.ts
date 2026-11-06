@@ -12,6 +12,7 @@ import {
   isValidId,
   IdCtx,
 } from "@/lib/admin";
+import { invalidate, TAGS } from "@/lib/cache";
 
 export async function PATCH(req: Request, { params }: IdCtx) {
   if (!(await guard())) return unauthorized();
@@ -30,5 +31,6 @@ export async function PATCH(req: Request, { params }: IdCtx) {
     { new: true },
   );
   if (!dentist) return notFound();
+  invalidate(TAGS.dentists);
   return NextResponse.json({ ok: true });
 }

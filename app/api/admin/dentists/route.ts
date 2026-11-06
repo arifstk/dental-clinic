@@ -5,6 +5,7 @@ import { connectDB } from "@/lib/db";
 import Dentist from "@/models/Dentist";
 import { dentistSchema } from "@/lib/validators";
 import { guard, unauthorized, invalid } from "@/lib/admin";
+import { invalidate, TAGS } from "@/lib/cache";
 
 export async function GET() {
   if (!(await guard())) return unauthorized();
@@ -20,6 +21,7 @@ export async function POST(req: Request) {
 
   await connectDB();
   const dentist = await Dentist.create(parsed.data);
+  invalidate(TAGS.dentists);
   return NextResponse.json(
     { ok: true, id: String(dentist._id) },
     { status: 201 },

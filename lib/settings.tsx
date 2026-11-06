@@ -1,20 +1,21 @@
-// lib/settings.ts
+// lib/settings.tsx
 
-import { cache } from "react";
+import { cacheLife, cacheTag } from "next/cache";
 import { connectDB } from "@/lib/db";
 import SiteSettings from "@/models/SiteSettings";
 import { site } from "@/lib/site";
+import { TAGS, failOnBuild } from "@/lib/cache";
 
 export type HourRow = { days: string; time: string; closed: boolean };
 
 export type SiteSettingsData = {
   name: string;
   phone: string;
-  phoneHref: string; // computed from phone
+  phoneHref: string;
   email: string;
   address: string;
-  mapsUrl: string; // raw value saved by admin (may be empty)
-  mapsHref: string; // mapsUrl, or auto-generated from address
+  mapsUrl: string;
+  mapsHref: string;
   hours: HourRow[];
 };
 
@@ -56,23 +57,32 @@ function build(src: Source): SiteSettingsData {
 // Used until the admin saves settings for the first time (or if DB is unreachable)
 export const defaultSettings: SiteSettingsData = build(site);
 
-// React cache() => Hero + Footer in the same request share one DB query
-export const getSiteSettings = cache(async (): Promise<SiteSettingsData> => {
-  try {
-    await connectDB();
-    const doc = await SiteSettings.findOne({ key: "main" }).lean();
-    if (!doc) return defaultSettings;
+// Cached across requests. Admin settings route must call invalidate(TAGS.settings).
+async function loadSettings(): Promise<SiteSettingsData> {
+  "use cache";
+  cacheTag(TAGS.settings);
+  cacheLife("content");
 
-    return build({
-      name: doc.name || defaultSettings.name,
-      phone: doc.phone || defaultSettings.phone,
-      email: doc.email || defaultSettings.email,
-      address: doc.address || defaultSettings.address,
-      mapsUrl: doc.mapsUrl || "",
-      hours: doc.hours?.length ? doc.hours : defaultSettings.hours,
-    });
+  await connectDB();
+  const doc = await SiteSettings.findOne({ key: "main" }).lean();
+  if (!doc) return defaultSettings;
+
+  return build({
+    name: doc.name || defaultSettings.name,
+    phone: doc.phone || defaultSettings.phone,
+    email: doc.email || defaultSettings.email,
+    address: doc.address || defaultSettings.address,
+    mapsUrl: doc.mapsUrl || "",
+    hours: doc.hours?.length ? doc.hours : defaultSettings.hours,
+  });
+}
+
+export async function getSiteSettings(): Promise<SiteSettingsData> {
+  try {
+    return await loadSettings();
   } catch (err) {
+    failOnBuild(err);
     console.error("getSiteSettings failed, using defaults:", err);
     return defaultSettings;
   }
-});
+}

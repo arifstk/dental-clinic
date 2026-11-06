@@ -17,13 +17,20 @@ import {
   Stethoscope,
   UserRound,
 } from "lucide-react";
-import { site } from "@/lib/site";
 import Hero from "@/components/Hero";
+import { getSiteSettings } from "@/lib/settings";
+import { buildMetadata } from "@/lib/seo";
+import { LocalBusinessJsonLd } from "@/components/seo/JsonLd";
 
-export const metadata: Metadata = {
-  title: { absolute: `${site.name} | Book a Dentist Appointment Online` },
-  description: "Choose your dentist, pick a time, and get an instant confirmation. Online dental appointment booking.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const s = await getSiteSettings();
+  return buildMetadata(s.name, {
+    title: `${s.name} | Book a Dentist Appointment Online`,
+    absoluteTitle: true,
+    description: "Choose your dentist, pick a time, and get an instant confirmation. Online dental appointment booking.",
+    path: "/",
+  });
+}
 
 const steps = [
   { icon: UserRound, title: "Choose your dentist", text: "Browse our dentists and pick the one you prefer." },
@@ -50,6 +57,8 @@ const reasons = [
 export default function HomePage() {
   return (
     <>
+      <LocalBusinessJsonLd />
+
       {/* Hero */}
       <Hero />
 
@@ -141,3 +150,4 @@ export default function HomePage() {
     </>
   );
 }
+
