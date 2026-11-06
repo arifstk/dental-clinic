@@ -11,7 +11,7 @@ import Calendar from "./Calendar";
 export type DentistItem = { id: string; name: string; specialty: string; photo: string };
 export type ServiceItem = { id: string; name: string; durationMinutes: number };
 
-type Slot = { start: string; end: string; available: boolean };
+type Slot = { start: string; end: string; available: boolean; booked?: boolean };
 type Done = { startTime: string; dentistName: string; email: string; manageToken: string };
 
 type Props = {
@@ -371,29 +371,64 @@ export default function BookingFlow({ dentists, services, tz, todayKey, maxKey }
                   <div key={i} className="skeleton h-10" />
                 ))}
               </div>
-            ) : slots.length === 0 || free === 0 ? (
-              <p className="alert alert-info mt-4">No times left on this day. Please pick another date.</p>
+            ) : slots.length === 0 ? (
+              <p className="alert alert-info mt-4">No times available on this day. Please pick another date.</p>
             ) : (
-              <div className="mt-4 grid grid-cols-3 gap-2 sm:grid-cols-4">
-                {slots.map((s) => {
-                  const selected = s.start === slotStart && s.available;
-                  return (
-                    <button
-                      key={s.start}
-                      type="button"
-                      disabled={!s.available}
-                      onClick={() => {
-                        setSlotStart(s.start);
-                        setNotice("");
-                      }}
-                      aria-pressed={selected}
-                      className={`slot ${selected ? "slot-selected" : ""} ${!s.available ? "slot-disabled" : ""}`}
-                    >
-                      {fmtTime(s.start)}
-                    </button>
-                  );
-                })}
-              </div>
+              <>
+                {free === 0 && (
+                  <p className="alert alert-info mt-4">No times left on this day. Please pick another date.</p>
+                )}
+
+                <div className="mt-4 grid grid-cols-3 gap-2 sm:grid-cols-4">
+                  {slots.map((s) => {
+                    const selected = s.start === slotStart && s.available;
+                    const booked = Boolean(s.booked);
+
+                    // booked = red, past/other unavailable = grey, selected = primary, free = outlined
+                    const stateClass = booked
+                      ? "cursor-not-allowed border-[#fca5a5] bg-[#fee2e2] text-[#b91c1c] line-through"
+                      : !s.available
+                        ? "cursor-not-allowed border-transparent bg-[#f1f5f9] text-[#94a3b8]"
+                        : selected
+                          ? "border-primary-600 bg-primary-600 text-white"
+                          : "border-[#cbd5e1] bg-white text-ink-900 hover:border-primary-600";
+
+                    return (
+                      <button
+                        key={s.start}
+                        type="button"
+                        disabled={!s.available}
+                        title={booked ? "Already booked" : !s.available ? "Not available" : undefined}
+                        onClick={() => {
+                          if (!s.available) return;
+                          setSlotStart(s.start);
+                          setNotice("");
+                        }}
+                        aria-pressed={selected}
+                        aria-label={booked ? `${fmtTime(s.start)} (already booked)` : fmtTime(s.start)}
+                        className={`rounded-lg border px-3 py-2 text-sm font-medium transition-colors ${stateClass}`}
+                      >
+                        {fmtTime(s.start)}
+                      </button>
+                    );
+                  })}
+                </div>
+
+                <ul className="muted mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs">
+                  <li className="flex items-center gap-2">
+                    <span className="h-3 w-3 rounded border border-[#cbd5e1] bg-white" aria-hidden />
+                    Available
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="h-3 w-3 rounded bg-primary-600" aria-hidden />
+                    Selected
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="h-3 w-3 rounded border border-[#fca5a5] bg-danger-100" aria-hidden />
+                    Booked
+                  </li>
+                </ul>
+              </>
             )}
 
             <p className="muted mt-4 flex items-center gap-2 text-xs">
@@ -543,4 +578,3 @@ export default function BookingFlow({ dentists, services, tz, todayKey, maxKey }
     </div>
   );
 }
-

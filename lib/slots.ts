@@ -6,7 +6,12 @@ import TimeOff from "@/models/TimeOff";
 import Appointment from "@/models/Appointment";
 import { env } from "./env";
 
-export type Slot = { start: string; end: string; available: boolean };
+export type Slot = {
+  start: string;
+  end: string;
+  available: boolean;
+  booked: boolean;
+};
 
 type ScheduleRow = {
   weekday: number;
@@ -60,10 +65,13 @@ function buildSlots(
     );
     const end = new Date(start.getTime() + step * 60000);
 
+    const booked = bookedSet.has(start.getTime());
+
     slots.push({
       start: start.toISOString(),
       end: end.toISOString(),
-      available: start.getTime() > now && !bookedSet.has(start.getTime()),
+      available: start.getTime() > now && !booked,
+      booked,
     });
   }
   return slots;
