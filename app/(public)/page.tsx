@@ -20,7 +20,8 @@ import {
 import Hero from "@/components/Hero";
 import { getSiteSettings } from "@/lib/settings";
 import { buildMetadata } from "@/lib/seo";
-import { LocalBusinessJsonLd } from "@/components/seo/JsonLd";
+import LocalBusinessJsonLd from "@/components/seo/JsonLd";
+// import { LocalBusinessJsonLd } from "@/components/seo/JsonLd";
 
 export async function generateMetadata(): Promise<Metadata> {
   const s = await getSiteSettings();
