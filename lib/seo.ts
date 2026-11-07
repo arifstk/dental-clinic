@@ -2,6 +2,7 @@
 
 import type { Metadata } from "next";
 import type { SiteSettingsData } from "@/lib/settings";
+import { OG_IMAGE } from "@/lib/site";
 
 export const siteUrl = (
   process.env.NEXT_PUBLIC_SITE_URL ??
@@ -13,14 +14,15 @@ export const siteUrl = (
 type PageMeta = {
   title: string;
   description: string;
-  path: string; // e.g. "/services"
-  absoluteTitle?: boolean; // skip the "%s | Name" template
+  path: string;
+  absoluteTitle?: boolean;
+  image?: string;
 };
 
-// Pages that set their own openGraph replace the root one (shallow merge),
-// so each page gets canonical + openGraph + twitter from here.
 export function buildMetadata(siteName: string, p: PageMeta): Metadata {
   const fullTitle = p.absoluteTitle ? p.title : `${p.title} | ${siteName}`;
+  const image = p.image ?? OG_IMAGE;
+
   return {
     title: p.absoluteTitle ? { absolute: p.title } : p.title,
     description: p.description,
@@ -32,11 +34,13 @@ export function buildMetadata(siteName: string, p: PageMeta): Metadata {
       title: fullTitle,
       description: p.description,
       url: p.path,
+      images: [{ url: image, width: 1200, height: 630, alt: siteName }],
     },
     twitter: {
       card: "summary_large_image",
       title: fullTitle,
       description: p.description,
+      images: [image],
     },
   };
 }
@@ -119,7 +123,7 @@ export function dentistSchema(s: SiteSettingsData) {
     "@type": "Dentist",
     name: s.name,
     url: siteUrl,
-    image: `${siteUrl}/opengraph-image`,
+    image: `${siteUrl}${OG_IMAGE}`,
     telephone: s.phone,
     email: s.email,
     address: {
