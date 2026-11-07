@@ -7,10 +7,18 @@ import { navLinks } from "@/lib/site";
 // No lastModified on purpose: new Date() here would trigger the cache-components "current time" error
 export default function sitemap(): MetadataRoute.Sitemap {
   const base = siteUrl.replace(/\/$/, "");
+  const paths = [...navLinks.map((l) => l.href), "/booking"];
 
-  return navLinks.map((l) => ({
-    url: `${base}${l.href === "/" ? "" : l.href}`,
-    changeFrequency: l.href === "/" ? "weekly" : "monthly",
-    priority: l.href === "/" ? 1 : l.href === "/services" ? 0.8 : 0.6,
+  return paths.map((path) => ({
+    url: `${base}${path === "/" ? "" : path}`,
+    changeFrequency: path === "/" || path === "/booking" ? "weekly" : "monthly",
+    priority:
+      path === "/"
+        ? 1
+        : path === "/booking"
+          ? 0.9
+          : path === "/services"
+            ? 0.8
+            : 0.6,
   }));
 }

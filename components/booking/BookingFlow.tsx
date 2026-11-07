@@ -297,19 +297,19 @@ export default function BookingFlow({ dentists, services, tz, todayKey, maxKey }
   const free = slots?.filter((s) => s.available).length ?? 0;
 
   return (
-    <div className="grid gap-6 lg:grid-cols-[1fr_340px] lg:items-start">
-      <div className="space-y-6">
+    <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_340px] lg:items-start">
+      <div className="min-w-0 space-y-6">
         {/* Step 1: dentist */}
         <section className="card">
           <StepTitle n={1} title="Choose your dentist" />
-          <div className="mt-5 grid gap-3 sm:grid-cols-2">
+          <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2">
             {dentists.map((d) => (
               <button
                 key={d.id}
                 type="button"
                 onClick={() => pickDentist(d.id)}
                 aria-pressed={d.id === dentistId}
-                className={`choice ${d.id === dentistId ? "choice-selected" : ""}`}
+                className={`choice w-full min-w-0 overflow-hidden text-left ${d.id === dentistId ? "choice-selected" : ""}`}
               >
                 {d.photo ? (
                   <Image
@@ -325,7 +325,7 @@ export default function BookingFlow({ dentists, services, tz, todayKey, maxKey }
                     {initials(d.name) || <UserRound size={22} aria-hidden />}
                   </span>
                 )}
-                <span className="min-w-0">
+                <span className="min-w-0 flex-1">
                   <span className="block truncate font-semibold text-ink-900">{d.name}</span>
                   <span className="muted block truncate">{d.specialty}</span>
                 </span>
