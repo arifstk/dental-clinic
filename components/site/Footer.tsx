@@ -24,16 +24,16 @@ export default async function Footer() {
 
         <div>
           <h3 className="text-sm font-semibold text-ink-900">Quick links</h3>
-          <ul className="mt-4 space-y-2.5">
+          <ul className="mt-4 space-y-2.5 text-sm">
             {navLinks.map((l) => (
               <li key={l.href}>
-                <Link href={l.href} className="nav-link">
+                <Link href={l.href} className="nav-link hover:underline">
                   {l.label}
                 </Link>
               </li>
             ))}
             <li>
-              <Link href="/booking" className="nav-link">
+              <Link href="/booking" className="nav-link hover:underline">
                 Book appointment
               </Link>
             </li>
@@ -81,9 +81,22 @@ export default async function Footer() {
       </div>
 
       <div className="border-t border-line">
-        <p className="container-page py-5 text-xs text-ink-500">
-          &copy; {currentYear} {s.name}. All rights reserved.
-        </p>
+        <div className="container-page flex flex-col items-center justify-between gap-2 py-5 text-center text-xs text-ink-500 sm:flex-row sm:text-left">
+          <p>
+            &copy; {currentYear} {s.name}. All rights reserved.
+          </p>
+          <p>
+            Developed by{" "}
+            <a
+              href="https://arif-portfolio-eosin.vercel.app/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-medium hover:text-primary-600"
+            >
+              Arif Hossain
+            </a>
+          </p>
+        </div>
       </div>
     </footer>
   );
